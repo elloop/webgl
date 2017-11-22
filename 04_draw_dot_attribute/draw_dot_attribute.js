@@ -40,8 +40,6 @@ function main() {
         click(ev, gl, canvas, a_pos, a_psize, u_color)
     }
 
-    console.log("HelloPoint2.js...")
-
     // gl.vertexAttrib3f(a_pos, 0.0, 0.2, 0.0)
     // gl.vertexAttrib1f(a_psize, 50.0)
 
