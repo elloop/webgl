@@ -68,6 +68,53 @@ key points:
 
 - `canvas.onmousedown`
 
+## 05_multipoints
+
+Draw multiple points using gl buffer.
+
+```js
+ // 1. create buffer
+    var buffer = gl.createBuffer();
+
+    var vertices = new Float32Array([
+        0.0, 0.5, -0.5, -0.5, 0.5, -0.5
+    ]);
+
+    var n = 3;
+
+    // 2. bind buffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+    // 3. buffer data
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+    // 4. vertex attribute
+    var a_pos = gl.getAttribLocation(gl.program, 'a_pos');
+    gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+
+    // 5. enable vertex
+    gl.enableVertexAttribArray(a_pos);
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // draw from buffer[0] to buffer[n-1], count == n.
+    gl.drawArrays(gl.POINTS, 0, n);
+```
+
+key points:
+
+- `gl.createBuffer`
+
+- `gl.bindBuffer`
+
+- `gl.bufferData`
+
+- `gl.vertexAttribPointer`
+
+- `gl.enableVertexAttribArray`
+
+- `gl.drawArrays(mode, from, count)`
 
 
 
