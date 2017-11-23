@@ -73,7 +73,7 @@ key points:
 Draw multiple points using gl buffer.
 
 ```js
- // 1. create buffer
+    // 1. create buffer
     var buffer = gl.createBuffer();
 
     var vertices = new Float32Array([
@@ -116,6 +116,8 @@ key points:
 
 - `gl.drawArrays(mode, from, count)`
 
+## 06_use_matrix
 
+Rotate, Translate, Scale triangle use matrix.
 
 
