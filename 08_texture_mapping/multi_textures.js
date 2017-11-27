@@ -11,10 +11,13 @@ var fssrc =
     '#ifdef GL_ES\n' +
     'precision mediump float;\n' +
     '#endif\n' +
-    'uniform sampler2D u_sampler;\n' +
+    'uniform sampler2D u_sampler0;\n' +
+    'uniform sampler2D u_sampler1;\n' +
     'varying vec2 v_tex_coord;\n' +
     'void main() {\n' +
-    '  gl_FragColor = texture2D(u_sampler, v_tex_coord);\n' +
+    '  vec4 color0 = texture2D(u_sampler0, v_tex_coord);\n' +
+    '  vec4 color1 = texture2D(u_sampler1, v_tex_coord);\n' +
+    '  gl_FragColor = color0 * color1;\n' +
     '}\n';
 
 function main() {
@@ -34,14 +37,10 @@ function main() {
     var buffer = gl.createBuffer();
 
     var vertices = new Float32Array([
-        // -0.5, 0.5, 0, 1,
-        // -0.5, -0.5, 0, 0,
-        // 0.5, 0.5, 1, 1,
-        // 0.5, -0.5, 1, 0,
-        -0.5, 0.5, -0.3, 1.7,
-        -0.5, -0.5, -0.3, -0.2,
-        0.5, 0.5, 1.7, 1.7,
-        0.5, -0.5, 1.7, -0.2,
+        -0.5, 0.5, 0, 1,
+        -0.5, -0.5, 0, 0,
+        0.5, 0.5, 1, 1,
+        0.5, -0.5, 1, 0,
     ]);
 
     var n = 4;
@@ -72,23 +71,39 @@ function main() {
 }
 
 function initTextures(gl, n) {
-    var texture = gl.createTexture();
+    var texture0 = gl.createTexture();
+    var u_sampler0 = gl.getUniformLocation(gl.program, 'u_sampler0');
 
-    var u_sampler = gl.getUniformLocation(gl.program, 'u_sampler');
-
-    var image = new Image();
-    image.onload = function() {
+    var image0 = new Image();
+    image0.onload = function() {
         console.log("image load success")
-        loadTexture(gl, n, texture, u_sampler, image);
+        loadTexture(gl, n, texture0, u_sampler0, image0, 0);
     };
+    image0.src = '../resources/redflower.jpg';
 
-    image.src = '../resources/sky.jpg';
+    var texture1 = gl.createTexture();
+    var u_sampler1 = gl.getUniformLocation(gl.program, 'u_sampler1');
+
+    var image1 = new Image();
+    image1.onload = function() {
+        console.log("image load success")
+        loadTexture(gl, n, texture1, u_sampler1, image1, 1);
+    };
+    image1.src = '../resources/circle.gif';
 }
 
-function loadTexture(gl, n, texture, u_sampler, image) {
+var tex0Loaded = false, tex1Loaded = false;
+function loadTexture(gl, n, texture, u_sampler, image, texIndex) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
 
-    gl.activeTexture(gl.TEXTURE0);
+    if (texIndex == 0) {
+        gl.activeTexture(gl.TEXTURE0);
+        tex0Loaded = true;
+    }
+    else {
+        gl.activeTexture(gl.TEXTURE1);
+        tex1Loaded = true;
+    }
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -99,8 +114,10 @@ function loadTexture(gl, n, texture, u_sampler, image) {
 
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
-    gl.uniform1i(u_sampler, 0);
+    gl.uniform1i(u_sampler, texIndex);
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+    if (tex0Loaded && tex1Loaded) {
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+    }
 }
 
