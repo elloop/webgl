@@ -248,6 +248,25 @@ var fssrc =
 3.  Texture coordinate (u,v) (or (s,t)), `texture2D(u_sampler, v_tex_coord)`.
 
 ```js
+var vssrc = 
+    'attribute vec4 a_pos;\n' +
+    'attribute vec2 a_tex_coord;\n' +
+    'varying vec2 v_tex_coord;\n' +
+    'void main() {\n' +
+    '  gl_Position = a_pos;\n' +
+    '  v_tex_coord = a_tex_coord; \n' +
+    '}\n';
+
+var fssrc = 
+    '#ifdef GL_ES\n' +
+    'precision mediump float;\n' +
+    '#endif\n' +
+    'uniform sampler2D u_sampler;\n' +
+    'varying vec2 v_tex_coord;\n' +
+    'void main() {\n' +
+    '  gl_FragColor = texture2D(u_sampler, v_tex_coord);\n' +
+    '}\n';
+
 function loadTexture(gl, n, texture, u_sampler, image) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
 
