@@ -35,7 +35,7 @@ function main() {
     // mvp
     var mvpMat = new Matrix4();
     mvpMat.setPerspective(30, canvas.width / canvas.height, 1, 100);
-    mvpMat.lookAt(-3, 3, 7, 0, 0, 0, 0, 1, 0);
+    mvpMat.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
     var u_mvpMat = gl.getUniformLocation(gl.program, "u_mvpMat");
     gl.uniformMatrix4fv(u_mvpMat, false, mvpMat.elements);
 
@@ -64,6 +64,13 @@ function initVertexBuffers(gl) {
         0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , // back
         1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // left
         0 , 1 , 1 , 0 , 1 , 1 , 0 , 1 , 1 , 0 , 1 , 1 , // down
+        //  white cube.
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // front
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // right
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // up
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // back
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // left
+        // 1, 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , // down
     ]);
 
     // 1. vertex and color buffer (ARRAY_BUFFER)
