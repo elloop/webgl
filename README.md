@@ -306,21 +306,21 @@ var fssrc =
 
 key points:
 
-- eye point (eyeX, eyeY, eyeZ), look-at point (atX, atY, atZ), up direction (upX, upY, upZ).
+- eye point `(eyeX, eyeY, eyeZ)`, look-at point `(atX, atY, atZ)`, up direction `(upX, upY, upZ)`.
 
-change eye point using `document.onkeydown`
+    change eye point using `document.onkeydown`
 
 - orthographic projection matrix or perspective projection matrix 
 
-canonical view volume.
+    canonical view volume.
 
-setOrtho(left, right, bottom, top, near, far)
+    `setOrtho(left, right, bottom, top, near, far)`
 
-setPerspective(fov, aspect, near, far)
+    `setPerspective(fov, aspect, near, far)`
 
 - model, view, projection matrix (mvp)
 
-move the model or move the eye point? the same effect.
+    move the model or move the eye point? the same effect.
 
 - `DEPTH_TEST` & `POLYGON_OFFSET_FILL` (solve z fighting)
 
