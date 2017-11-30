@@ -1,0 +1,5 @@
+0. lighting is the reason why shading language is invented at first.
+1. Phong Lighting Model.
+    https://learnopengl-cn.readthedocs.io/zh/latest/02%20Lighting/02%20Basic%20Lighting/
+
+2. 在顶点着色器中实现的冯氏光照模型叫做Gouraud着色
