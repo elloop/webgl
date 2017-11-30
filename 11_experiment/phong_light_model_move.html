@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>draw a point</title>
+</head>
+<body onload="main()">
+	<canvas id="webgl" width="400" height="400">
+		please use canvas
+	</canvas>
+    <p>
+        <button type="button" onclick="animation()">animation</button>
+    </p>
+    <p>
+        <button type="button" onclick="onX()">x</button>
+    </p>
+    <p>
+        <button type="button" onclick="onY()">y</button>
+    </p>
+    <p>
+        <button type="button" onclick="onZ()">z</button>
+    </p>
+    <p>
+        <button type="button" onclick="stop()">stop</button>
+    </p>
+    <script src="../lib/webgl-utils.js"></script>
+    <script type="text/javascript" src="../lib/webgl-debug.js"></script>
+    <script type="text/javascript" src="../lib/cuon-utils.js"></script>
+    <script type="text/javascript" src="../lib/cuon-matrix.js"></script>
+    <script type="text/javascript" src="phong_light_model_move.js"></script>
+</body>
+</html>
