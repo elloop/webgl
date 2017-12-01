@@ -326,3 +326,167 @@ key points:
 
 - `gl.drawElements`, `gl.ELEMENT_ARRAY_BUFFER` demo, drawing a cube.
 
+## 10_light
+
+demo codes cover:  directional light, point light, ambient light(no spot light, no diminishing light considered).
+
+key points:
+
+- directional light:
+
+    **light direction, and light color** **normal vector**
+
+
+```js
+var vssrc = 
+    'attribute vec4 a_pos;\n' +
+    'attribute vec4 a_color;\n' +
+    'uniform mat4 u_mvpMat;\n' +
+    'attribute vec3 a_normal;\n' +
+    'uniform vec3 u_lightColor;\n' +
+    'uniform vec3 u_lightDirection;\n' +
+    'varying vec4 v_color;\n' +
+    'void main() {\n' +
+    '  gl_Position = u_mvpMat * a_pos;\n' +
+    '  vec3 normal = normalize(a_normal);\n' +
+    '  float nDotL = max(dot(normal, u_lightDirection), 0.0);\n' +
+    '  vec3 diffuse = u_lightColor * vec3(a_color) * nDotL;\n' +
+    '  v_color = vec4(diffuse, a_color.a);\n' +
+    '}\n';
+```
+
+    **with ambient light**
+
+```js
+var vssrc = 
+    'attribute vec4 a_pos;\n' +
+    'attribute vec4 a_color;\n' +
+    'uniform mat4 u_mvpMat;\n' +
+    'attribute vec3 a_normal;\n' +
+    'uniform vec3 u_lightColor;\n' +
+    'uniform vec3 u_ambient;\n' +
+    'uniform vec3 u_lightDirection;\n' +
+    'varying vec4 v_color;\n' +
+    'void main() {\n' +
+    '  gl_Position = u_mvpMat * a_pos;\n' +
+    '  vec3 normal = normalize(a_normal);\n' +
+    '  float nDotL = max(dot(normal, u_lightDirection), 0.0);\n' +
+    '  vec3 diffuse = u_lightColor * vec3(a_color) * nDotL;\n' +
+    '  vec3 ambientLight = u_ambient * a_color.rgb;\n' +
+    '  v_color = vec4(diffuse + ambientLight, a_color.a);\n' +
+    '}\n';
+```
+
+    **transformed, compute the real-time normal vector by multiply inverse of and compose of model matrix. **
+
+```js
+    // normal mat, (inverse of & transpose of modelMat)
+    var normalMat = new Matrix4();
+    normalMat.setInverseOf(modelMat);
+    normalMat.transpose();
+    var u_normalMat = gl.getUniformLocation(gl.program, "u_normalMat");
+    gl.uniformMatrix4fv(u_normalMat, false, normalMat.elements);
+
+    // ...
+
+    // in vertex shader.
+    vec3 normal = normalize(vec3(u_normalMat * a_normal));
+    // a_normal is the original normal before the model's transform changed.
+```
+
+- point light
+
+    **the same computation process as directional light except that point light come from all directions, so use (light position - vertex position) to decide the light direction of each vertex.**
+
+```js
+var vssrc = 
+    'attribute vec4 a_pos;\n' +
+    'attribute vec4 a_color;\n' +
+    'attribute vec4 a_normal;\n' +
+    'uniform mat4 u_mvpMat;\n' +
+    'uniform mat4 u_modelMat;\n' +
+    'uniform mat4 u_normalMat;\n' +
+    'uniform vec3 u_lightPos;\n' +
+    'uniform vec3 u_lightColor;\n' +
+    'uniform vec3 u_ambient;\n' +
+    'varying vec4 v_color;\n' +
+    'void main() {\n' +
+    '  gl_Position = u_mvpMat * a_pos;\n' +
+    '  vec3 normal = normalize(vec3(u_normalMat * a_normal));\n' +
+    '  vec4 vertexPos = u_modelMat * a_pos;\n' +
+    '  vec3 lightDirection = normalize(u_lightPos - vec3(vertexPos));\n' +
+    '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
+    '  vec3 diffuse = u_lightColor * vec3(a_color) * nDotL;\n' +
+    '  vec3 ambientLight = u_ambient * a_color.rgb;\n' +
+    '  v_color = vec4(diffuse + ambientLight, a_color.a);\n' +
+    '}\n';
+```
+
+    compute light in vertex shader (phong in vertex) -- Gouraud 
+    compute light in fragment shader(per-fragment lighting)  -- phong
+
+```js
+var fssrc = 
+    '#ifdef GL_ES\n' +
+    'precision mediump float;\n' +
+    '#endif\n' +
+    'uniform vec3 u_lightPos;\n' +
+    'uniform vec3 u_lightColor;\n' +
+    'uniform vec3 u_ambient;\n' +
+    'varying vec4 v_color;\n' +
+    'varying vec3 v_normal;\n' +
+    'varying vec3 v_vertexPos;\n' +
+    'void main() {\n' +
+    // v_normal may be not normalized after interpolate.
+    '  vec3 normal = normalize(v_normal);\n' +
+    '  vec3 lightDirection = normalize(u_lightPos - v_vertexPos);\n' +
+    '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
+    '  vec3 diffuse = u_lightColor * vec3(v_color) * nDotL;\n' +
+    '  vec3 ambientLight = u_ambient * v_color.rgb;\n' +
+    '  gl_FragColor = vec4(diffuse + ambientLight, v_color.a);\n' +
+    '}\n';
+```
+
+    **specular**
+
+```js
+var fssrc = 
+    '#ifdef GL_ES\n' +
+    'precision mediump float;\n' +
+    '#endif\n' +
+    'uniform vec3 u_lightPos;\n' +
+    'uniform float u_specularStrength;\n' +
+    'uniform vec3 u_lightColor;\n' +
+    'uniform vec3 u_ambient;\n' +
+    'uniform vec3 u_eyePos;\n' +
+    'varying vec4 v_color;\n' +
+    'varying vec3 v_normal;\n' +
+    'varying vec3 v_vertexPos;\n' +
+    'void main() {\n' +
+    '  vec3 normal = normalize(v_normal);\n' +
+    '  vec3 lightDirection = normalize(u_lightPos - v_vertexPos);\n' +
+    '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
+    '  vec3 diffuse = u_lightColor * vec3(v_color) * nDotL;\n' +
+    '  vec3 ambientLight = u_ambient * v_color.rgb;\n' +
+    '  vec3 viewDirection = normalize(u_eyePos - v_vertexPos);\n' +
+
+
+    // here
+    '  vec3 reflectDirection = reflect(-lightDirection, v_normal);\n' +
+    '  float shininess = 64.0;\n' +
+    '  float spe = pow(max(dot(viewDirection, reflectDirection), 0.0), shininess);\n' +
+    '  vec3 specular = (u_specularStrength * spe * u_lightColor) * v_color.rgb;\n' +
+
+
+    '  gl_FragColor = vec4(diffuse + ambientLight + specular, v_color.a);\n' +
+    '}\n';
+```
+
+## 11_experiment
+
+rotate the cube with mouse and animation.
+
+## 12_demos_from_book
+
+demos from book: [WebGL Programming Guide](https://www.amazon.com/WebGL-Programming-Guide-Interactive-Graphics/dp/0321902920/ref=sr_1_1?s=books&ie=UTF8&qid=1512133174&sr=1-1&keywords=WebGL+Programming+Guide)
+
