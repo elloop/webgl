@@ -6,6 +6,10 @@
 
 2. 在顶点着色器中实现的冯氏光照模型叫做Gouraud着色
 
+3. 半角向量
+
+4. 法线贴图，纹理贴图，高度贴图， diffuse 贴图
+
 # demos:
 
 cube                        [ file:///Users/elloop/codes/webgl/share/cube.html]

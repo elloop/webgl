@@ -87,6 +87,7 @@ function main() {
     var mvpMat = new Matrix4();
     mvpMat.setPerspective(30, canvas.width / canvas.height, 1, 100);
     var eyePos = new Vector3([6, 6, 14]);
+    // var eyePos = new Vector3([6, 6, 14]);   // different view pos cause different specular.
     mvpMat.lookAt(eyePos.elements[0], eyePos.elements[1], eyePos.elements[2], 0, 0, 0, 0, 1, 0);
     mvpMat.multiply(modelMat);
     gl.uniformMatrix4fv(u_mvpMat, false, mvpMat.elements);
