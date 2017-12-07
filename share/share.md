@@ -13,6 +13,8 @@
 
 5. multi lights
 
+6. Rendering Path and color space.
+
 # demos:
 
 cube                        [ file:///Users/elloop/codes/webgl/share/cube.html]
