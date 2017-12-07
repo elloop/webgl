@@ -9,8 +9,8 @@ function main() {
         return;
     }
 
-    readShaderFile(gl, "spec_perfrag.vert", "v");
-    readShaderFile(gl, "spec_perfrag.frag", "f");
+    readShaderFile(gl, "specualr.vert", "v");
+    readShaderFile(gl, "directional.frag", "f");
 }
 
 function start(gl) {
@@ -32,7 +32,7 @@ function start(gl) {
     var u_eyePos           = gl.getUniformLocation(gl.program, "u_eyePos");
     var u_specularStrength = gl.getUniformLocation(gl.program, "u_specularStrength");
 
-    gl.uniform1f(u_specularStrength, 0.2);
+    gl.uniform1f(u_specularStrength, 0.5);
 
     // light color
     gl.uniform3f(u_lightColor, 1.0, 1.0, 1.0);  // white light

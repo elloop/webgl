@@ -1,41 +1,21 @@
-var vssrc = 
-    'attribute vec4 a_pos;\n' +
-    'attribute vec4 a_color;\n' +
-    'attribute vec4 a_normal;\n' +
-    'uniform mat4 u_mvpMat;\n' +
-    'uniform mat4 u_modelMat;\n' +
-    'uniform mat4 u_normalMat;\n' +
-    'uniform vec3 u_lightPos;\n' +
-    'uniform vec3 u_lightColor;\n' +
-    'uniform vec3 u_ambient;\n' +
-    'varying vec4 v_color;\n' +
-    'void main() {\n' +
-    '  gl_Position = u_mvpMat * a_pos;\n' +
-    '  vec3 normal = normalize(vec3(u_normalMat * a_normal));\n' +
-    '  vec4 vertexPos = u_modelMat * a_pos;\n' +
-    '  vec3 lightDirection = normalize(u_lightPos - vec3(vertexPos));\n' +
-    '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
-    '  vec3 diffuse = u_lightColor * vec3(a_color) * nDotL;\n' +
-    '  vec3 ambientLight = u_ambient * a_color.rgb;\n' +
-    '  v_color = vec4(diffuse + ambientLight, a_color.a);\n' +
-    '}\n';
-
-var fssrc = 
-    '#ifdef GL_ES\n' +
-    'precision mediump float;\n' +
-    '#endif\n' +
-    'varying vec4 v_color;\n' +
-    'void main() {\n' +
-    '  gl_FragColor = v_color;\n' +
-    '}\n';
+var vssrc = null;
+var fssrc = null;
 
 function main() {
     var canvas = document.getElementById('webgl');
     var gl = getWebGLContext(canvas);
     if (!gl) {
-        console.log('failed to get the rendering context for webgl');
+        alert('failed to get the rendering context for webgl');
         return;
     }
+
+    readShaderFile(gl, "point.vert", "v");
+    readShaderFile(gl, "directional.frag", "f");
+}
+
+function start(gl) {
+
+    var canvas = document.getElementById('webgl');
 
     if (!initShaders(gl, vssrc, fssrc)) {
     	console.log('failed to initialize shaders');

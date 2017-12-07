@@ -11,7 +11,8 @@ var vssrc =
     'varying vec4 v_color;\n' +
     'void main() {\n' +
     '  gl_Position = u_mvpMat * a_pos;\n' +
-    '  vec3 normal = normalize(vec3(u_normalMat * a_normal));\n' +
+    // '  vec3 normal = normalize(vec3(u_normalMat * a_normal));\n' +
+    '  vec3 normal = normalize(vec3(a_normal));\n' +
     '  vec4 vertexPos = u_modelMat * a_pos;\n' +
     '  vec3 lightDirection = normalize(u_lightPos - vec3(vertexPos));\n' +
     '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
@@ -48,14 +49,14 @@ function main() {
     var u_lightPos   = gl.getUniformLocation(gl.program, "u_lightPos");
     var u_ambient    = gl.getUniformLocation(gl.program, "u_ambient");
     var u_mvpMat     = gl.getUniformLocation(gl.program, "u_mvpMat");
-    var u_normalMat  = gl.getUniformLocation(gl.program, "u_normalMat");
+    // var u_normalMat  = gl.getUniformLocation(gl.program, "u_normalMat");
     var u_modelMat   = gl.getUniformLocation(gl.program, "u_modelMat");
 
     // light color
     gl.uniform3f(u_lightColor, 1.0, 1.0, 1.0);  // white light
 
     // light position
-    var lightPos = new Vector3([3, 4.0, 3.5]);
+    var lightPos = new Vector3([4.5, 5.0, 3.5]);
     gl.uniform3fv(u_lightPos, lightPos.elements);
 
     // ambient light.
@@ -63,22 +64,22 @@ function main() {
     gl.uniform3fv(u_ambient, ambient.elements);
 
     // model mat
-    var modelMat = new Matrix4();
-    modelMat.rotate(90, 0, 1, 0);
-    gl.uniformMatrix4fv(u_modelMat, false, modelMat.elements);
+    // var modelMat = new Matrix4();
+    // modelMat.rotate(90, 0, 1, 0);
+    // gl.uniformMatrix4fv(u_modelMat, false, modelMat.elements);
     
     // mvp
     var mvpMat = new Matrix4();
     mvpMat.setPerspective(30, canvas.width / canvas.height, 1, 100);
     mvpMat.lookAt(6, 6, 14, 0, 0, 0, 0, 1, 0);
-    mvpMat.multiply(modelMat);
+    // mvpMat.multiply(modelMat);
     gl.uniformMatrix4fv(u_mvpMat, false, mvpMat.elements);
 
     // normal mat, (inverse of & transpose of modelMat)
-    var normalMat = new Matrix4();
-    normalMat.setInverseOf(modelMat);
-    normalMat.transpose();
-    gl.uniformMatrix4fv(u_normalMat, false, normalMat.elements);
+    // var normalMat = new Matrix4();
+    // normalMat.setInverseOf(modelMat);
+    // normalMat.transpose();
+    // gl.uniformMatrix4fv(u_normalMat, false, normalMat.elements);
 
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);

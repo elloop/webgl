@@ -17,9 +17,13 @@
 
 cube                        [ file:///Users/elloop/codes/webgl/share/cube.html]
 color cube                  [ file:///Users/elloop/codes/webgl/share/color_cube.html]
+
 directional                 [ file:///Users/elloop/codes/webgl/share/directional_lightedcube.html]
 directional transform       [ file:///Users/elloop/codes/webgl/share/directional_lightedcube_transform.html]
 point                       [ file:///Users/elloop/codes/webgl/share/point_lighted_cube.html]
+
+point specular              [file:///Users/elloop/codes/webgl/share/p_l_spec.html]
+
 point per-fragment          [ file:///Users/elloop/codes/webgl/share/point_lighted_cube_perfragment.html]
 point sphere                [ file:///Users/elloop/codes/webgl/share/PointLightedSphere.html]
 point sphere per-fragment   [ file:///Users/elloop/codes/webgl/share/PointLightedSphere_perFragment.html]
